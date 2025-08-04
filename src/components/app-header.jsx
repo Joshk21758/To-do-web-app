@@ -1,5 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Download, Feather } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Download, Feather } from "lucide-react";
+import Link from "next/link";
 
 export function AppHeader({ onExport }) {
   return (
@@ -8,13 +9,9 @@ export function AppHeader({ onExport }) {
         <div className="flex items-center gap-2">
           <Feather className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-foreground">
-            TaskFlow
+            TaskFinder
           </h1>
         </div>
-        <Button variant="outline" onClick={onExport}>
-          <Download className="mr-2 h-4 w-4" />
-          Export
-        </Button>
       </div>
     </header>
   );

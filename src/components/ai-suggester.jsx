@@ -1,16 +1,22 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { getAiSuggestions } from '@/lib/actions';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, PlusCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { Skeleton } from './ui/skeleton';
+import * as React from "react";
+import { getAiSuggestions } from "@/lib/actions";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Sparkles, PlusCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "./ui/skeleton";
 
 export function AiSuggester({ onAddSuggestedTasks }) {
-  const [prompt, setPrompt] = React.useState('');
+  const [prompt, setPrompt] = React.useState("");
   const [suggestions, setSuggestions] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const { toast } = useToast();
@@ -20,16 +26,17 @@ export function AiSuggester({ onAddSuggestedTasks }) {
     if (!prompt.trim()) return;
     setIsLoading(true);
     setSuggestions([]);
-    
+
     const result = await getAiSuggestions(prompt);
-    
+
     if (result.success && result.tasks) {
       setSuggestions(result.tasks);
     } else {
       toast({
-        variant: 'destructive',
-        title: 'AI Suggestion Failed',
-        description: result.error || 'Could not retrieve suggestions. Please try again.',
+        variant: "destructive",
+        title: "AI Suggestion Failed",
+        description:
+          result.error || "Could not retrieve suggestions. Please try again.",
       });
     }
     setIsLoading(false);
@@ -37,9 +44,9 @@ export function AiSuggester({ onAddSuggestedTasks }) {
 
   const handleAddSuggestion = (taskText) => {
     onAddSuggestedTasks([taskText]);
-    setSuggestions(current => current.filter(s => s !== taskText));
+    setSuggestions((current) => current.filter((s) => s !== taskText));
     toast({
-      title: 'Task Added!',
+      title: "Task Added!",
       description: `"${taskText}" has been added to your list.`,
     });
   };
@@ -52,7 +59,14 @@ export function AiSuggester({ onAddSuggestedTasks }) {
           AI Task Suggester
         </CardTitle>
         <CardDescription>
-          Feeling stuck? Describe a goal, and let AI break it down into actionable tasks for you.
+          <p
+            style={{
+              fontSize: 15,
+            }}
+          >
+            Feeling stuck? Describe a goal, and let AI break it down into
+            actionable tasks for you.
+          </p>
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -64,8 +78,12 @@ export function AiSuggester({ onAddSuggestedTasks }) {
             disabled={isLoading}
             rows={4}
           />
-          <Button type="submit" disabled={isLoading || !prompt.trim()} className="w-full">
-            {isLoading ? 'Thinking...' : 'Suggest Tasks'}
+          <Button
+            type="submit"
+            disabled={isLoading || !prompt.trim()}
+            className="w-full"
+          >
+            {isLoading ? "Reasoning" : "Suggest a Task"}
           </Button>
         </form>
 
@@ -81,9 +99,19 @@ export function AiSuggester({ onAddSuggestedTasks }) {
                 </>
               ) : (
                 suggestions.map((suggestion, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded-md bg-muted/50 group">
-                    <span className="text-sm text-foreground">{suggestion}</span>
-                    <Button variant="ghost" size="icon" onClick={() => handleAddSuggestion(suggestion)} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 rounded-md bg-muted/50 group"
+                  >
+                    <span className="text-sm text-foreground">
+                      {suggestion}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleAddSuggestion(suggestion)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
                       <PlusCircle className="h-5 w-5 text-accent" />
                     </Button>
                   </div>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'PT Sans', sans-serif;
+  font-family: "PT Sans", sans-serif;
 }
 
 @layer base {
@@ -73,12 +73,16 @@ body {
   }
 }
 
-.card-tile{
+.card-tile {
   border-color: black;
-  border-width: 2px
+  border-width: 2px;
 }
 
-.div-class{
-  margin-left: 50px;
-  
+.div-class {
+  margin-left: 1200px;
+}
+
+.nav-link {
+  font-size: 23px;
+  margin-left: 30px;
 }

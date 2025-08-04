@@ -1,72 +1,94 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { AppHeader } from '@/components/app-header';
-import { AddTaskForm } from '@/components/add-task-form';
-import { TaskList } from '@/components/task-list';
-import { AiSuggester } from '@/components/ai-suggester';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { useLocalStorage } from '@/hooks/use-local-storage';
-import { generateIcsContent } from '@/lib/calendar';
-import { downloadFile } from '@/lib/utils';
-import { v4 as uuidv4 } from 'uuid';
+import * as React from "react";
+import { AppHeader } from "@/components/app-header";
+import { AddTaskForm } from "@/components/add-task-form";
+import { TaskList } from "@/components/task-list";
+import { AiSuggester } from "@/components/ai-suggester";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { generateIcsContent } from "@/lib/calendar";
+import { downloadFile } from "@/lib/utils";
+import { v4 as uuidv4 } from "uuid";
 
-// uuid is not a dependency, let's use a simpler id generator
-const simpleId = () => `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
+const simpleId = () =>
+  `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 export default function Home() {
-  const [tasks, setTasks] = useLocalStorage('tasks', []);
+  const [tasks, setTasks] = useLocalStorage("tasks", []);
 
   const handleAddTask = (text, dueDate) => {
     const newTask = { id: simpleId(), text, completed: false, dueDate };
-    setTasks(prevTasks => [...prevTasks, newTask]);
+    setTasks((prevTasks) => [...prevTasks, newTask]);
   };
 
   const handleAddSuggestedTasks = (suggestedTasks) => {
-    const newTasks = suggestedTasks.map(text => ({
+    const newTasks = suggestedTasks.map((text) => ({
       id: simpleId(),
       text,
       completed: false,
       dueDate: null,
     }));
-    setTasks(prevTasks => [...prevTasks, ...newTasks]);
+    setTasks((prevTasks) => [...prevTasks, ...newTasks]);
   };
 
   const handleToggleTask = (id) => {
     setTasks(
-      tasks.map(task =>
+      tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
   };
 
   const handleDeleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
   const handleClearCompleted = () => {
-    setTasks(tasks.filter(task => !task.completed));
-  }
+    setTasks(tasks.filter((task) => !task.completed));
+  };
 
   const handleExport = () => {
     const header = "TaskFlow - To-Do List\n";
     const date = `Exported on: ${new Date().toLocaleDateString()}\n\n`;
-    const pending = "Pending Tasks:\n" + tasks.filter(t => !t.completed).map(t => `- [ ] ${t.text}${t.dueDate ? ` (Due: ${new Date(t.dueDate).toLocaleDateString()})` : ''}`).join("\n");
-    const completed = "\n\nCompleted Tasks:\n" + tasks.filter(t => t.completed).map(t => `- [x] ${t.text}`).join("\n");
-    
+    const pending =
+      "Pending Tasks:\n" +
+      tasks
+        .filter((t) => !t.completed)
+        .map(
+          (t) =>
+            `- [ ] ${t.text}${
+              t.dueDate
+                ? ` (Due: ${new Date(t.dueDate).toLocaleDateString()})`
+                : ""
+            }`
+        )
+        .join("\n");
+    const completed =
+      "\n\nCompleted Tasks:\n" +
+      tasks
+        .filter((t) => t.completed)
+        .map((t) => `- [x] ${t.text}`)
+        .join("\n");
+
     const content = header + date + pending + completed;
-    downloadFile(content, 'taskflow-export.txt', 'text/plain');
+    downloadFile(content, "taskflow-export.txt", "text/plain");
   };
 
   const handleAddToCalendar = (task) => {
     if (!task.dueDate) return;
     const icsContent = generateIcsContent(task);
-    const fileName = `${task.text.replace(/ /g, '_')}.ics`;
-    downloadFile(icsContent, fileName, 'text/calendar');
+    const fileName = `${task.text.replace(/ /g, "_")}.ics`;
+    downloadFile(icsContent, fileName, "text/calendar");
   };
 
-  const completedCount = tasks.filter(t => t.completed).length;
+  const completedCount = tasks.filter((t) => t.completed).length;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -76,8 +98,18 @@ export default function Home() {
           <div className="lg:col-span-2">
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-3xl font-headline">My Tasks</CardTitle>
-                <CardDescription>What do you need to get done today?</CardDescription>
+                <CardTitle className="text-4xl font-headline">
+                  My Tasks
+                </CardTitle>
+                <CardDescription>
+                  <p
+                    style={{
+                      fontSize: 20,
+                    }}
+                  >
+                    What do you need to get done today?
+                  </p>
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <AddTaskForm onAddTask={handleAddTask} />
@@ -98,7 +130,13 @@ export default function Home() {
         </div>
       </main>
       <footer className="text-center p-4 text-sm text-muted-foreground">
-        <p>Built with ❤️ for seamless productivity. TaskFlow.</p>
+        <p
+          style={{
+            fontSize: 20,
+          }}
+        >
+          Mwansa Kunda | CreativeCodes
+        </p>
       </footer>
     </div>
   );
